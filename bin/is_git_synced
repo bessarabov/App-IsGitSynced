@@ -73,3 +73,4 @@ error("path '$path' has unstaged changes")    if !has_unstaged_changes($path);
 error("path '$path' has staged changes")      if !has_staged_changes($path);
 error("path '$path' has no origin remote")    if !has_origin($path);
 # TODO check that all local branches are synced to origin 
+# TODO check that there are no untracked files in the working copy
