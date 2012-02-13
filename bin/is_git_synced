@@ -5,30 +5,71 @@ use warnings FATAL => 'all';
 use 5.010;
 use Data::Printer;
 
+# 'constants'
 my $true  = 1;
 my $false = '';
 
+# global var
 my $quiet = $false;
-my $path;
 
+# subs
 sub error {
     my ($message) = @_;
     say "Error: $message" if !$quiet;
     exit 1;
 }
 
+sub is_git_repo {
+    my ($path) = @_;
+
+    `cd $path; git status 2>&1`;
+    return ${^CHILD_ERROR_NATIVE} ? $false : $true;
+}
+
+sub has_unstaged_changes {
+    my ($path) = @_;
+
+    `cd $path; git diff --exit-code 2>&1`;
+    return ${^CHILD_ERROR_NATIVE} ? $false : $true;
+}
+
+sub has_staged_changes {
+    my ($path) = @_;
+
+    `cd $path; git diff --cached --exit-code 2>&1`;
+    return ${^CHILD_ERROR_NATIVE} ? $false : $true;
+}
+
+sub has_origin {
+    my ($path) = @_;
+
+    my $output = `cd $path; git remote`;
+    my @remotes = split(/\n/, $output);
+
+    foreach my $remote (@remotes) {
+        return $true if $remote eq 'origin';
+    }
+
+    return $false;
+}
+
+# main
+my $path;
+
 if ( $ARGV[0] && ( $ARGV[0] eq '--quiet' ) ) {
     $quiet = $true;
     $path  = $ARGV[1];
+} elsif ( $ARGV[1] && ( $ARGV[1] eq '--quiet' ) ) {
+    $quiet = $true;
+    $path = $ARGV[0];
 } else {
     $path = $ARGV[0];
 }
 
-# returns false if specified path is not a git repo
-sub is_git_repo {
-    my ($path) = @_;
-}
-
 error("no required path specified")           if !defined($path);
 error("path '$path' does not exist")          if !-d $path;
-error("path '$path' is not a git repository") if !-d $path;
+error("path '$path' is not a git repository") if !is_git_repo($path);
+error("path '$path' has unstaged changes")    if !has_unstaged_changes($path);
+error("path '$path' has staged changes")      if !has_staged_changes($path);
+error("path '$path' has no origin remote")    if !has_origin($path);
+# TODO check that all local branches are synced to origin 
