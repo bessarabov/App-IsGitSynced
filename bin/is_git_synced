@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings FATAL => 'all';
+use 5.010;
+use Data::Printer;
+
+my $true  = 1;
+my $false = '';
+
+my $quiet = $false;
+my $path;
+
+sub error {
+    my ($message) = @_;
+    say "Error: $message" if !$quiet;
+    exit 1;
+}
+
+if ( $ARGV[0] && ( $ARGV[0] eq '--quiet' ) ) {
+    $quiet = $true;
+    $path  = $ARGV[1];
+} else {
+    $path = $ARGV[0];
+}
+
+# returns false if specified path is not a git repo
+sub is_git_repo {
+    my ($path) = @_;
+}
+
+error("no required path specified")           if !defined($path);
+error("path '$path' does not exist")          if !-d $path;
+error("path '$path' is not a git repository") if !-d $path;
