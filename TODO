@@ -1,0 +1,4 @@
+= TODO
+
+ * minimize running external programms. Just once run `git status --porcelain`
+   and parce the output
