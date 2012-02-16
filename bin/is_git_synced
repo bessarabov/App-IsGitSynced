@@ -1,9 +1,17 @@
 #!/usr/bin/perl
 
+=encoding UTF-8
+
+=head1 Name
+
+is_git_synced - script to find out if the local git repo is fully synced
+
+=cut
+
 use strict;
 use warnings FATAL => 'all';
 use 5.010;
-use Data::Printer;
+use Data::Printer; # TODO bes - remove it
 
 # 'constants'
 my $true  = 1;
@@ -53,6 +61,19 @@ sub has_origin {
     return $false;
 }
 
+sub has_untracked {
+    my ($path) = @_;
+
+    my $output = `cd $path; git status --porcelain`;
+    my @remotes = split(/\n/, $output);
+
+    foreach my $line (@remotes) {
+        return $true if $line =~ /^\?\?/;
+    }
+
+    return $false;
+}
+
 # main
 my $path;
 
@@ -72,5 +93,5 @@ error("path '$path' is not a git repository") if !is_git_repo($path);
 error("path '$path' has unstaged changes")    if !has_unstaged_changes($path);
 error("path '$path' has staged changes")      if !has_staged_changes($path);
 error("path '$path' has no origin remote")    if !has_origin($path);
-# TODO check that all local branches are synced to origin 
-# TODO check that there are no untracked files in the working copy
+error("path '$path' has untracked files")     if has_untracked($path);
+# TODO bes check that all local branches are synced to origin 
