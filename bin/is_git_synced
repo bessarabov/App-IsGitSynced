@@ -10,8 +10,12 @@ is_git_synced - script to find out if the local git repo is fully synced
 
 use strict;
 use warnings FATAL => 'all';
-use 5.010;
-use Data::Printer; # TODO bes - remove it
+
+# TODO bes - remove it
+{
+    use 5.010;
+    use DDP;
+}
 
 # 'constants'
 my $true  = 1;
@@ -19,12 +23,12 @@ my $false = '';
 
 # global var
 my $quiet = $false;
+my $only_errors = $false;
 
 # subs
 sub error {
     my ($message) = @_;
-    say "Error: $message" if !$quiet;
-    exit 1;
+    print "Error: $message\n" if !$quiet;
 }
 
 sub is_git_repo {
@@ -75,23 +79,67 @@ sub has_untracked {
 }
 
 # main
-my $path;
+my @paths;
 
-if ( $ARGV[0] && ( $ARGV[0] eq '--quiet' ) ) {
-    $quiet = $true;
-    $path  = $ARGV[1];
-} elsif ( $ARGV[1] && ( $ARGV[1] eq '--quiet' ) ) {
-    $quiet = $true;
-    $path = $ARGV[0];
-} else {
-    $path = $ARGV[0];
+foreach my $argv (@ARGV) {
+    if ($argv eq '--quiet') {
+        $quiet = $true;
+    } elsif ($argv eq '--only_errors') {
+        $only_errors = $true;
+    } else {
+        push @paths, $argv;
+    }
 }
 
-error("no required path specified")           if !defined($path);
-error("path '$path' does not exist")          if !-d $path;
-error("path '$path' is not a git repository") if !is_git_repo($path);
-error("path '$path' has unstaged changes")    if !has_unstaged_changes($path);
-error("path '$path' has staged changes")      if !has_staged_changes($path);
-error("path '$path' has no origin remote")    if !has_origin($path);
-error("path '$path' has untracked files")     if has_untracked($path);
-# TODO bes check that all local branches are synced to origin 
+error("no required path specified") if !@paths;
+
+my $checks = [
+    {
+        func => sub { return !-d $_[0] },
+        text => sub { error("path '$_[0]' does not exist") }, 
+    },
+    {
+        func => sub { return !is_git_repo($_[0]) },
+        text => sub { error("path '$_[0]' is not a git repository") }, 
+    },
+    {
+        func => sub { return !has_unstaged_changes($_[0]) },
+        text => sub { error("path '$_[0]' has unstaged changes") }, 
+    },
+    {
+        func => sub { return !has_staged_changes($_[0]) },
+        text => sub { error("path '$_[0]' has staged changes") }, 
+    },
+    {
+        func => sub { return has_untracked($_[0]) },
+        text => sub { error("path '$_[0]' has untracked files") }, 
+    },
+    {
+        func => sub { return !has_origin($_[0]) },
+        text => sub {  error("path '$_[0]' has no remote 'origin'") }, 
+    },
+    # TODO bes check that all local branches are synced to origin 
+]; 
+
+my $was_error;
+
+foreach my $path (@paths) {
+    my $local_error;
+
+    CHECKS:
+    foreach my $check (@{$checks}) {
+        if ($check->{func}->($path)) {
+            $check->{text}->($path);
+            $local_error = 1;
+            last CHECKS;
+        }
+    };
+
+    if ($local_error) {
+        $was_error++;
+    } else {
+        print "Success: path '$path' has no local changes and fully synced to remote\n" if (!$quiet && !$only_errors);
+    }
+}
+
+exit 1 if $was_error;
