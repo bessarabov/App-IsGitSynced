@@ -80,28 +80,28 @@ sub has_origin {
 
 my $checks = [
     {
-        func => sub { return !-d $_[0] },
         text => sub { error("path '$_[0]' does not exist") }, 
+        func => sub { return !-d $_[0] },
     },
     {
-        func => sub { return !is_git_repo($_[0]) },
         text => sub { error("path '$_[0]' is not a git repository") }, 
+        func => sub { return !is_git_repo($_[0]) },
     },
     {
-        func => sub { return !has_unstaged_changes($_[0]) },
         text => sub { error("path '$_[0]' has unstaged changes") }, 
+        func => sub { return !has_unstaged_changes($_[0]) },
     },
     {
-        func => sub { return !has_staged_changes($_[0]) },
         text => sub { error("path '$_[0]' has staged changes") }, 
+        func => sub { return !has_staged_changes($_[0]) },
     },
     {
-        func => sub { return has_untracked($_[0]) },
         text => sub { error("path '$_[0]' has untracked files") }, 
+        func => sub { return has_untracked($_[0]) },
     },
     {
+        text => sub { error("path '$_[0]' has no remote 'origin'") }, 
         func => sub { return !has_origin($_[0]) },
-        text => sub {  error("path '$_[0]' has no remote 'origin'") }, 
     },
     # TODO bes check that all local branches are synced to origin 
 ]; 
