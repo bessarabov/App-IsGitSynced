@@ -2,3 +2,4 @@
 
  * minimize running external programms. Just once run `git status --porcelain`
    and parce the output
+ * add command line parameter --ignore_missing_paths
