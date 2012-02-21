@@ -78,6 +78,22 @@ sub has_origin {
     return $false;
 }
 
+# http://stackoverflow.com/questions/8830833/check-that-the-local-git-repo-has-everything-commited-and-pushed-to-master
+sub has_divergences_with_origin {
+    my ($path) = @_;
+
+    my $output = `cd $path; git branch`;
+    my @branches = map { s/..(.*)/$1/; $_; } split(/\n/, $output);
+
+    foreach my $branch (@branches) {
+        my $local = `cd $path; git rev-parse --verify $branch 2>&1`;
+        my $origin = `cd $path; git rev-parse --verify origin/$branch 2>&1`; 
+        return $true if $local ne $origin;
+    }
+
+    return $false;
+}
+
 my $checks = [
     {
         text => sub { error("path '$_[0]' does not exist") }, 
@@ -103,7 +119,10 @@ my $checks = [
         text => sub { error("path '$_[0]' has no remote 'origin'") }, 
         func => sub { return !has_origin($_[0]) },
     },
-    # TODO bes check that all local branches are synced to origin 
+    {
+        text => sub { error("path '$_[0]' has some divergences with remote 'origin'") }, 
+        func => sub { return has_divergences_with_origin($_[0]) },
+    },
 ]; 
 
 # main
