@@ -21,7 +21,7 @@ use warnings FATAL => 'all';
 my $true  = 1;
 my $false = '';
 
-# global var
+# global vars
 my $quiet = $false;
 my $only_errors = $false;
 
@@ -52,19 +52,6 @@ sub has_staged_changes {
     return ${^CHILD_ERROR_NATIVE} ? $false : $true;
 }
 
-sub has_origin {
-    my ($path) = @_;
-
-    my $output = `cd $path; git remote`;
-    my @remotes = split(/\n/, $output);
-
-    foreach my $remote (@remotes) {
-        return $true if $remote eq 'origin';
-    }
-
-    return $false;
-}
-
 sub has_untracked {
     my ($path) = @_;
 
@@ -78,20 +65,18 @@ sub has_untracked {
     return $false;
 }
 
-# main
-my @paths;
+sub has_origin {
+    my ($path) = @_;
 
-foreach my $argv (@ARGV) {
-    if ($argv eq '--quiet') {
-        $quiet = $true;
-    } elsif ($argv eq '--only_errors') {
-        $only_errors = $true;
-    } else {
-        push @paths, $argv;
+    my $output = `cd $path; git remote`;
+    my @remotes = split(/\n/, $output);
+
+    foreach my $remote (@remotes) {
+        return $true if $remote eq 'origin';
     }
-}
 
-error("no required path specified") if !@paths;
+    return $false;
+}
 
 my $checks = [
     {
@@ -120,6 +105,21 @@ my $checks = [
     },
     # TODO bes check that all local branches are synced to origin 
 ]; 
+
+# main
+my @paths;
+
+foreach my $argv (@ARGV) {
+    if ($argv eq '--quiet') {
+        $quiet = $true;
+    } elsif ($argv eq '--only_errors') {
+        $only_errors = $true;
+    } else {
+        push @paths, $argv;
+    }
+}
+
+error("no required path specified") if !@paths;
 
 my $was_error;
 
