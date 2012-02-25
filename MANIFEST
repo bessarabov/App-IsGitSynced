@@ -1,0 +1,10 @@
+bin/is_git_synced
+Changes
+MANIFEST
+Makefile.PL
+README
+lib/App/IsGitSynced.pm
+t/00-load.t
+t/manifest.t
+t/pod-coverage.t
+t/pod.t
