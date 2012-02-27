@@ -6,10 +6,21 @@
 
 is_git_synced - script to find out if the local git repo is fully synced
 
+=head1 SYNOPSIS
+
+is_git_synced [options] [dir]...
+ 
+ Options:
+  
+      --quiet
+      --only_errors
+      --help           Show this message
+
 =cut
 
 use strict;
 use warnings FATAL => 'all';
+use Pod::Usage;
 
 # TODO bes - remove it
 {
@@ -154,6 +165,8 @@ foreach my $argv (@ARGV) {
         $quiet = $true;
     } elsif ($argv eq '--only_errors') {
         $only_errors = $true;
+    } elsif ($argv eq '--help') {
+        pod2usage(); 
     } else {
         push @paths, $argv;
     }
