@@ -96,6 +96,10 @@ sub has_divergences_with_origin {
 
 my $checks = [
     {
+        text => sub { error("path '$_[0]' is a file") },
+        func => sub { return -f $_[0] },
+    },
+    {
         text => sub { error("path '$_[0]' does not exist") },
         func => sub { return !-d $_[0] },
     },
