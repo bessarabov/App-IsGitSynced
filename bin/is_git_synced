@@ -87,7 +87,7 @@ sub has_divergences_with_origin {
 
     foreach my $branch (@branches) {
         my $local = `cd $path; git rev-parse --verify $branch 2>&1`;
-        my $origin = `cd $path; git rev-parse --verify origin/$branch 2>&1`; 
+        my $origin = `cd $path; git rev-parse --verify origin/$branch 2>&1`;
         return $true if $local ne $origin;
     }
 
@@ -96,34 +96,34 @@ sub has_divergences_with_origin {
 
 my $checks = [
     {
-        text => sub { error("path '$_[0]' does not exist") }, 
+        text => sub { error("path '$_[0]' does not exist") },
         func => sub { return !-d $_[0] },
     },
     {
-        text => sub { error("path '$_[0]' is not a git repository") }, 
+        text => sub { error("path '$_[0]' is not a git repository") },
         func => sub { return !is_git_repo($_[0]) },
     },
     {
-        text => sub { error("path '$_[0]' has unstaged changes") }, 
+        text => sub { error("path '$_[0]' has unstaged changes") },
         func => sub { return !has_unstaged_changes($_[0]) },
     },
     {
-        text => sub { error("path '$_[0]' has staged changes") }, 
+        text => sub { error("path '$_[0]' has staged changes") },
         func => sub { return !has_staged_changes($_[0]) },
     },
     {
-        text => sub { error("path '$_[0]' has untracked files") }, 
+        text => sub { error("path '$_[0]' has untracked files") },
         func => sub { return has_untracked($_[0]) },
     },
     {
-        text => sub { error("path '$_[0]' has no remote 'origin'") }, 
+        text => sub { error("path '$_[0]' has no remote 'origin'") },
         func => sub { return !has_origin($_[0]) },
     },
     {
-        text => sub { error("path '$_[0]' has some divergences with remote 'origin'") }, 
+        text => sub { error("path '$_[0]' has some divergences with remote 'origin'") },
         func => sub { return has_divergences_with_origin($_[0]) },
     },
-]; 
+];
 
 # main
 my @paths;
