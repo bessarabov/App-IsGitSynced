@@ -159,9 +159,12 @@ foreach my $argv (@ARGV) {
     }
 }
 
-error("no required path specified") if !@paths;
-
 my $was_error;
+
+if (!@paths) {
+    error("no required path specified");
+    $was_error++;
+}
 
 foreach my $path (@paths) {
     my $local_error;
