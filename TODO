@@ -1,5 +1,14 @@
 = TODO
 
+== nearest version
+
+ * generate lib/App/IsGitSynced.pm from bin/is_git_synced 
+ * generate README from bin/is_git_synced
+ * write Changes
+
+
+== next versions
+
  * minimize running external programms. Just once run `git status --porcelain`
    and parce the output
  * add command line parameter --ignore_missing_paths
