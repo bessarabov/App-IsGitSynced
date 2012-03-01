@@ -93,11 +93,6 @@ use strict;
 use warnings FATAL => 'all';
 use Pod::Usage;
 
-# TODO bes - remove it
-{
-    use 5.010;
-    use DDP;
-}
 our $VERSION = 0.01;
 
 # 'constants'
