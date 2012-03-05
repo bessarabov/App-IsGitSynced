@@ -1,56 +1,40 @@
 package App::IsGitSynced;
 
-use warnings;
-use strict;
+=encoding UTF-8
 
 =head1 NAME
 
-App::IsGitSynced - The great new App::IsGitSynced!
+App::IsGitSynced - script to find out if the local git repo is fully synced
 
 =head1 VERSION
 
 Version 0.01
 
-=cut
-
-our $VERSION = '0.01';
-
-
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+is_git_synced [options] dir1 [dir2 ...]
 
-Perhaps a little code snippet.
+ Options:
+  
+      --quiet           Script will not output anything
+      --only_errors     Script will write only dirs with errors
+      --help            Show this message
+      --version         Show version number
 
-    use App::IsGitSynced;
+Script checks every specifeid dir if it is a git repo and it has ho local
+changes that are not in remote repsitory origin. Script by default will output
+information about every checked dir in separate line. The exit status will
+be 0 if everything is synced and 1 otherwise.
 
-    my $foo = App::IsGitSynced->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
+Project url: https://github.com/bessarabov/App-IsGitSynced
 
 =head1 AUTHOR
 
-Ivan Bessarabov, C<< <ivan at bessarabov.ru> >>
+Ivan Bessarabov, C<< <ivan@bessarabov.ru> >>
+
+=head1 SOURCE CODE
+
+The source code for this module is hosted on GitHub L<https://github.com/bessarabov/App-IsGitSynced>
 
 =head1 BUGS
 
@@ -58,8 +42,7 @@ Please report any bugs or feature requests to C<bug-app-isgitsynced at rt.cpan.o
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-IsGitSynced>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-
-
+Or you can use GitHub Issues L<https://github.com/bessarabov/App-IsGitSynced/issues>
 
 =head1 SUPPORT
 
@@ -107,4 +90,6 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; # End of App::IsGitSynced
+our $VERSION = 0.01;
+
+1;

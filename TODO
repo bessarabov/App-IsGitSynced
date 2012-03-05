@@ -2,8 +2,6 @@
 
 == nearest version
 
- * generate lib/App/IsGitSynced.pm from bin/is_git_synced 
- * generate README from bin/is_git_synced
  * write Changes
 
 
