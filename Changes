@@ -1,4 +1,7 @@
 Revision history for App-IsGitSynced
 
+0.02    2012-03-06
+        * Information about script in Makefile.PL
+
 0.01    2012-03-05
         * First public release

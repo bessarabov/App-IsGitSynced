@@ -11,6 +11,7 @@ WriteMakefile(
       ? ('LICENSE'=> 'perl')
       : ()),
     PL_FILES            => {},
+    EXE_FILES    => [ grep { /\w$/ } glob("script/*") ],
     PREREQ_PM => {
         'Test::More' => 0,
     },

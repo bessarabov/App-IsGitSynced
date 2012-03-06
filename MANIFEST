@@ -1,4 +1,4 @@
-bin/is_git_synced
+script/is_git_synced
 Changes
 MANIFEST
 Makefile.PL

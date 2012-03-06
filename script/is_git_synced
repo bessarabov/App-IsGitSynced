@@ -8,14 +8,14 @@ is_git_synced - script to find out if the local git repo is fully synced
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 
 is_git_synced [options] dir1 [dir2 ...]
 
  Options:
-  
+
       --quiet           Script will not output anything
       --only_errors     Script will write only dirs with errors
       --help            Show this message
@@ -93,7 +93,7 @@ use strict;
 use warnings FATAL => 'all';
 use Pod::Usage;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 # 'constants'
 my $true  = 1;
@@ -233,7 +233,7 @@ foreach my $argv (@ARGV) {
     } elsif ($argv eq '--only_errors') {
         $only_errors = $true;
     } elsif ($argv eq '--help') {
-        pod2usage(); 
+        pod2usage();
     } elsif ($argv eq '--version') {
         print "is_git_synced $VERSION\n";
         exit 2;

@@ -16,7 +16,7 @@ sub get_pod_from {
     my $pod;
     my $SH = new IO::Scalar \$pod;
 
-    podselect({-output => $SH}, 'bin/is_git_synced');
+    podselect({-output => $SH}, $file);
 
     return $pod
 
@@ -36,7 +36,7 @@ sub get_version_from {
     return 1;
 }
 
-my $file = 'bin/is_git_synced';
+my $file = 'script/is_git_synced';
 my $package = 'App::IsGitSynced';
 
 my $pod     = get_pod_from($file);

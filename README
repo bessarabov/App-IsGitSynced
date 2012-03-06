@@ -2,13 +2,13 @@ NAME
     is_git_synced - script to find out if the local git repo is fully synced
 
 VERSION
-    Version 0.01
+    Version 0.02
 
 SYNOPSIS
     is_git_synced [options] dir1 [dir2 ...]
 
      Options:
-  
+
           --quiet           Script will not output anything
           --only_errors     Script will write only dirs with errors
           --help            Show this message

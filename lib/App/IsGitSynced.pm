@@ -8,14 +8,14 @@ App::IsGitSynced - script to find out if the local git repo is fully synced
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =head1 SYNOPSIS
 
 is_git_synced [options] dir1 [dir2 ...]
 
  Options:
-  
+
       --quiet           Script will not output anything
       --only_errors     Script will write only dirs with errors
       --help            Show this message
@@ -90,6 +90,6 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 1;
