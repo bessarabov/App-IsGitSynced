@@ -165,6 +165,7 @@ sub has_divergences_with_origin {
     my @branches = map { s/..(.*)/$1/; $_; } split(/\n/, $output);
 
     foreach my $branch (@branches) {
+        next if $branch eq '(no branch)';
         my $local = `cd $path; git rev-parse --verify $branch 2>&1`;
         my $origin = `cd $path; git rev-parse --verify origin/$branch 2>&1`;
         return $true if $local ne $origin;
