@@ -8,3 +8,9 @@
  * minimize running external programms. Just once run `git status --porcelain`
    and parce the output
  * add command line parameter --ignore_missing_paths
+ * output detailed info about what branch has changes
+ * show ok if some path is missing and there are params --ignore_missing_paths
+   --show_ok
+ * maybe I should not store lib/App/IsGitSynced.pm in git repo because it is
+   generated from the script? and maybe I can remote that file. The same
+   question about README, but it is needed for pretty view in github.
