@@ -92,6 +92,7 @@ See http://dev.perl.org/licenses/ for more information.
 use strict;
 use warnings FATAL => 'all';
 use Pod::Usage;
+use Term::ANSIColor qw(:constants);
 
 our $VERSION = 0.02;
 
@@ -102,21 +103,13 @@ my $false = '';
 # global vars
 my $quiet = $false;
 my $only_errors = $false;
-my $can_print_in_color = eval 'require Term::ANSIColor; 1';
-
-if ($can_print_in_color) {
-    import Term::ANSIColor ':constants';
-} else {
-    *RESET  = sub { };
-    *RED    = sub { };
-}
 
 # subs
 sub error {
     my ($message) = @_;
 
     if (!$quiet) {
-        if ($can_print_in_color and -t STDOUT) {
+        if (-t STDOUT) {
             print RED();
             print "Error: $message\n";
             print RESET();
