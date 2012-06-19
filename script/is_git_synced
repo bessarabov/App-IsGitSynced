@@ -79,6 +79,21 @@ my %options = (
 lock_keys(%options); # To make sure you haven't misspelled key
 
 # subs
+sub get_paths_and_set_options {
+
+    my @paths;
+
+    foreach my $argv (@ARGV) {
+        if ($argv ~~ [keys %options]) {
+            $options{$argv} = $true;
+        } else {
+            push @paths, $argv;
+        }
+    }
+
+    return @paths;
+}
+
 sub error {
     my ($message) = @_;
 
@@ -192,15 +207,7 @@ my $checks = [
 ];
 
 # main
-my @paths;
-
-foreach my $argv (@ARGV) {
-    if ($argv ~~ [keys %options]) {
-        $options{$argv} = $true;
-    } else {
-        push @paths, $argv;
-    }
-}
+my @paths = get_paths_and_set_options();
 
 if ($options{'--help'}) {
     pod2usage({
