@@ -5,3 +5,8 @@ Revision history for App-IsGitSynced
 
 0.02    2012-03-06
         * Information about script in Makefile.PL
+
+0.03    2012-06-20
+        * Removed warnings if not on any branch
+        * Added --show_ok parameter
+        * Other small changes

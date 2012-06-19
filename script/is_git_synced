@@ -8,7 +8,7 @@ is_git_synced - script to find out if the local git repo is fully synced
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
@@ -61,7 +61,7 @@ use Pod::Usage;
 use Term::ANSIColor qw(:constants);
 use Hash::Util qw(lock_keys);
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 # 'constants'
 my $true  = 1;

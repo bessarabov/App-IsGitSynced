@@ -2,7 +2,7 @@ NAME
     is_git_synced - script to find out if the local git repo is fully synced
 
 VERSION
-    Version 0.02
+    Version 0.03
 
 SYNOPSIS
     is_git_synced [options] dir1 [dir2 ...]
@@ -11,13 +11,14 @@ SYNOPSIS
 
           --quiet           Script will not output anything
           --only_errors     Script will write only dirs with errors
+          --show_ok         Show 'ok' message if everthing is synced
           --help            Show this message
           --version         Show version number
 
-    Script checks every specifeid dir if it is a git repo and it has ho
-    local changes that are not in remote repsitory origin. Script by default
-    will output information about every checked dir in separate line. The
-    exit status will be 0 if everything is synced and 1 otherwise.
+    Script checks every specified dir if it is a git repo and it has ho
+    local changes that are not in remote repository origin. Script by
+    default will output information about every checking dir in the separate
+    line. The exit status will be 0 if everything is synced and 1 otherwise.
 
     Project url: https://github.com/bessarabov/App-IsGitSynced
 
@@ -29,39 +30,9 @@ SOURCE CODE
     <https://github.com/bessarabov/App-IsGitSynced>
 
 BUGS
-    Please report any bugs or feature requests to "bug-app-isgitsynced at
-    rt.cpan.org", or through the web interface at
-    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=App-IsGitSynced>. I will
-    be notified, and then you'll automatically be notified of progress on
-    your bug as I make changes.
-
-    Or you can use GitHub Issues
+    Please report any bugs or feature requests in GitHub Issues
     <https://github.com/bessarabov/App-IsGitSynced/issues>
 
-SUPPORT
-    You can find documentation for this module with the perldoc command.
-
-        perldoc App::IsGitSynced
-
-    You can also look for information at:
-
-    *   RT: CPAN's request tracker
-
-        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-IsGitSynced>
-
-    *   AnnoCPAN: Annotated CPAN documentation
-
-        <http://annocpan.org/dist/App-IsGitSynced>
-
-    *   CPAN Ratings
-
-        <http://cpanratings.perl.org/d/App-IsGitSynced>
-
-    *   Search CPAN
-
-        <http://search.cpan.org/dist/App-IsGitSynced/>
-
-ACKNOWLEDGEMENTS
 LICENSE AND COPYRIGHT
     Copyright 2012 Ivan Bessarabov.
 
