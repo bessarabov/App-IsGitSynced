@@ -93,6 +93,7 @@ use strict;
 use warnings FATAL => 'all';
 use Pod::Usage;
 use Term::ANSIColor qw(:constants);
+use Hash::Util qw(lock_keys);
 
 our $VERSION = 0.02;
 
@@ -100,15 +101,23 @@ our $VERSION = 0.02;
 my $true  = 1;
 my $false = '';
 
+my $success_exit_status = 0;
+my $error_exit_status   = 1;
+
 # global vars
-my $quiet = $false;
-my $only_errors = $false;
+my %options = (
+    '--quiet'       => $false,
+    '--only_errors' => $false,
+    '--help'        => $false,
+    '--version'     => $false,
+);
+lock_keys(%options); # To make sure you haven't misspelled key
 
 # subs
 sub error {
     my ($message) = @_;
 
-    if (!$quiet) {
+    if (!$options{'--quiet'}) {
         if (-t STDOUT) {
             print RED();
             print "Error: $message\n";
@@ -221,18 +230,20 @@ my $checks = [
 my @paths;
 
 foreach my $argv (@ARGV) {
-    if ($argv eq '--quiet') {
-        $quiet = $true;
-    } elsif ($argv eq '--only_errors') {
-        $only_errors = $true;
-    } elsif ($argv eq '--help') {
-        pod2usage();
-    } elsif ($argv eq '--version') {
-        print "is_git_synced $VERSION\n";
-        exit 2;
+    if ($argv ~~ [keys %options]) {
+        $options{$argv} = $true;
     } else {
         push @paths, $argv;
     }
+}
+
+if ($options{'--help'}) {
+    pod2usage({
+        -exitval => $success_exit_status,
+    });
+} elsif ($options{'--version'}) {
+    print "is_git_synced $VERSION\n";
+    exit $success_exit_status;
 }
 
 my $was_error;
@@ -257,8 +268,8 @@ foreach my $path (@paths) {
     if ($local_error) {
         $was_error++;
     } else {
-        print "Success: path '$path' has no local changes and fully synced to remote\n" if (!$quiet && !$only_errors);
+        print "Success: path '$path' has no local changes and fully synced to remote\n" if (!$options{'--quiet'} && !$options{'--only_errors'});
     }
 }
 
-exit 1 if $was_error;
+exit $error_exit_status if $was_error;
