@@ -18,6 +18,7 @@ is_git_synced [options] dir1 [dir2 ...]
 
       --quiet           Script will not output anything
       --only_errors     Script will write only dirs with errors
+      --show_ok         Show 'ok' message if everthing is synced
       --help            Show this message
       --version         Show version number
 
@@ -73,6 +74,7 @@ my $error_exit_status   = 1;
 my %options = (
     '--quiet'       => $false,
     '--only_errors' => $false,
+    '--show_ok'     => $false,
     '--help'        => $false,
     '--version'     => $false,
 );
@@ -244,4 +246,13 @@ foreach my $path (@paths) {
     }
 }
 
-exit $error_exit_status if $was_error;
+if (!$was_error) {
+    if ($options{'--show_ok'}) {
+        print GREEN();
+        print "ok\n";
+        print RESET();
+    }
+    exit $success_exit_status;
+} else {
+    exit $error_exit_status;
+}
