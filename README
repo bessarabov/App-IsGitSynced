@@ -3,7 +3,7 @@ NAME
     synced
 
 VERSION
-    Version 0.03
+    Version 0.04
 
 SYNOPSIS
     is_git_synced [options] dir1 [dir2 ...]

@@ -8,7 +8,7 @@ App::IsGitSynced - script to find out if the local git repos are fully synced
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =head1 SYNOPSIS
 
@@ -66,6 +66,6 @@ should be printed
 
 =cut
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 1;
