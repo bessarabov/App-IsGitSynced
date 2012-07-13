@@ -18,6 +18,7 @@ is_git_synced [options] dir1 [dir2 ...]
 
       --quiet           Script will not output anything
       --only_errors     Script will write only dirs with errors
+      --ignore_missing  Will ignore missing dirs
       --show_ok         Show 'ok' message if everthing is synced
       --help            Show this message
       --version         Show version number
@@ -72,17 +73,19 @@ my $ERROR_EXIT_STATUS   = 1;
 
 # global vars
 my %OPTIONS = (
-    '--quiet'       => $FALSE,
-    '--only_errors' => $FALSE,
-    '--show_ok'     => $FALSE,
-    '--help'        => $FALSE,
-    '--version'     => $FALSE,
+    '--quiet'          => $FALSE,
+    '--only_errors'    => $FALSE,
+    '--ignore_missing' => $FALSE,
+    '--version'        => $FALSE,
+    '--show_ok'        => $FALSE,
+    '--help'           => $FALSE,
 );
 lock_keys(%OPTIONS); # To make sure you haven't misspelled key
 
 my %STATUSES = (
     'success' => 1,
     'fail'    => 2,
+    'skip'    => 3,
 );
 lock_keys(%STATUSES); # To make sure you haven't misspelled key
 
@@ -132,6 +135,8 @@ sub is_dir {
 
     if (-d $path) {
         return $STATUSES{success};
+    } elsif ( (not -d $path) and $OPTIONS{'--ignore_missing'}) {
+        return $STATUSES{skip};
     } else {
         return (
             $STATUSES{fail},
@@ -285,6 +290,7 @@ foreach my $path (@paths) {
     );
 
     my $local_error;
+    my $skipped;
 
     CHECKS:
     foreach my $check (@checks) {
@@ -292,6 +298,9 @@ foreach my $path (@paths) {
 
         if ($check_result == $STATUSES{success}) {
             next CHECKS;
+        } elsif ($check_result == $STATUSES{skip}) {
+            $skipped = $TRUE;
+            last CHECKS;
         } elsif ($check_result == $STATUSES{fail}) {
             error($fail_text);
             $local_error = 1;
@@ -301,6 +310,8 @@ foreach my $path (@paths) {
 
     if ($local_error) {
         $was_error++;
+    } elsif ($skipped) {
+        print "Skipping path '$path'\n" if (!$OPTIONS{'--quiet'} && !$OPTIONS{'--only_errors'});
     } else {
         print "Success: path '$path' has no local changes and fully synced to remote\n" if (!$OPTIONS{'--quiet'} && !$OPTIONS{'--only_errors'});
     }
