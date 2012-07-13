@@ -135,7 +135,7 @@ sub is_dir {
     } else {
         return (
             $STATUSES{fail},
-            "path '$path' is not a director"
+            "path '$path' is not a directory"
         );
     }
 }
@@ -273,7 +273,6 @@ if (!@paths) {
 }
 
 foreach my $path (@paths) {
-    my $local_error;
 
     my @checks = (
         \&is_dir,
@@ -284,6 +283,8 @@ foreach my $path (@paths) {
         \&has_origin,
         \&has_no_divergences_with_origin,
     );
+
+    my $local_error;
 
     CHECKS:
     foreach my $check (@checks) {
@@ -303,6 +304,7 @@ foreach my $path (@paths) {
     } else {
         print "Success: path '$path' has no local changes and fully synced to remote\n" if (!$OPTIONS{'--quiet'} && !$OPTIONS{'--only_errors'});
     }
+
 }
 
 if (!$was_error) {
