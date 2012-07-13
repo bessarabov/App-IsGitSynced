@@ -64,21 +64,21 @@ use Hash::Util qw(lock_keys);
 our $VERSION = 0.03;
 
 # 'constants'
-my $true  = 1;
-my $false = '';
+my $TRUE  = 1;
+my $FALSE = '';
 
-my $success_exit_status = 0;
-my $error_exit_status   = 1;
+my $SUCCESS_EXIT_STATUS = 0;
+my $ERROR_EXIT_STATUS   = 1;
 
 # global vars
-my %options = (
-    '--quiet'       => $false,
-    '--only_errors' => $false,
-    '--show_ok'     => $false,
-    '--help'        => $false,
-    '--version'     => $false,
+my %OPTIONS = (
+    '--quiet'       => $FALSE,
+    '--only_errors' => $FALSE,
+    '--show_ok'     => $FALSE,
+    '--help'        => $FALSE,
+    '--version'     => $FALSE,
 );
-lock_keys(%options); # To make sure you haven't misspelled key
+lock_keys(%OPTIONS); # To make sure you haven't misspelled key
 
 # subs
 sub get_paths_and_set_options {
@@ -86,8 +86,8 @@ sub get_paths_and_set_options {
     my @paths;
 
     foreach my $argv (@ARGV) {
-        if ($argv ~~ [keys %options]) {
-            $options{$argv} = $true;
+        if ($argv ~~ [keys %OPTIONS]) {
+            $OPTIONS{$argv} = $TRUE;
         } else {
             push @paths, $argv;
         }
@@ -99,7 +99,7 @@ sub get_paths_and_set_options {
 sub error {
     my ($message) = @_;
 
-    if (!$options{'--quiet'}) {
+    if (!$OPTIONS{'--quiet'}) {
         if (-t STDOUT) {
             print RED();
             print "Error: $message\n";
@@ -114,21 +114,21 @@ sub is_git_repo {
     my ($path) = @_;
 
     `cd $path; git status 2>&1`;
-    return ${^CHILD_ERROR_NATIVE} ? $false : $true;
+    return ${^CHILD_ERROR_NATIVE} ? $FALSE : $TRUE;
 }
 
 sub has_unstaged_changes {
     my ($path) = @_;
 
     `cd $path; git diff --exit-code 2>&1`;
-    return ${^CHILD_ERROR_NATIVE} ? $false : $true;
+    return ${^CHILD_ERROR_NATIVE} ? $FALSE : $TRUE;
 }
 
 sub has_staged_changes {
     my ($path) = @_;
 
     `cd $path; git diff --cached --exit-code 2>&1`;
-    return ${^CHILD_ERROR_NATIVE} ? $false : $true;
+    return ${^CHILD_ERROR_NATIVE} ? $FALSE : $TRUE;
 }
 
 sub has_untracked {
@@ -138,10 +138,10 @@ sub has_untracked {
     my @remotes = split(/\n/, $output);
 
     foreach my $line (@remotes) {
-        return $true if $line =~ /^\?\?/;
+        return $TRUE if $line =~ /^\?\?/;
     }
 
-    return $false;
+    return $FALSE;
 }
 
 sub has_origin {
@@ -151,10 +151,10 @@ sub has_origin {
     my @remotes = split(/\n/, $output);
 
     foreach my $remote (@remotes) {
-        return $true if $remote eq 'origin';
+        return $TRUE if $remote eq 'origin';
     }
 
-    return $false;
+    return $FALSE;
 }
 
 # http://stackoverflow.com/questions/8830833/check-that-the-local-git-repo-has-everything-commited-and-pushed-to-master
@@ -168,10 +168,10 @@ sub has_divergences_with_origin {
         next if $branch eq '(no branch)';
         my $local = `cd $path; git rev-parse --verify $branch 2>&1`;
         my $origin = `cd $path; git rev-parse --verify origin/$branch 2>&1`;
-        return $true if $local ne $origin;
+        return $TRUE if $local ne $origin;
     }
 
-    return $false;
+    return $FALSE;
 }
 
 my $checks = [
@@ -212,13 +212,13 @@ my $checks = [
 # main
 my @paths = get_paths_and_set_options();
 
-if ($options{'--help'}) {
+if ($OPTIONS{'--help'}) {
     pod2usage({
-        -exitval => $success_exit_status,
+        -exitval => $SUCCESS_EXIT_STATUS,
     });
-} elsif ($options{'--version'}) {
+} elsif ($OPTIONS{'--version'}) {
     print "is_git_synced $VERSION\n";
-    exit $success_exit_status;
+    exit $SUCCESS_EXIT_STATUS;
 }
 
 my $was_error;
@@ -243,17 +243,17 @@ foreach my $path (@paths) {
     if ($local_error) {
         $was_error++;
     } else {
-        print "Success: path '$path' has no local changes and fully synced to remote\n" if (!$options{'--quiet'} && !$options{'--only_errors'});
+        print "Success: path '$path' has no local changes and fully synced to remote\n" if (!$OPTIONS{'--quiet'} && !$OPTIONS{'--only_errors'});
     }
 }
 
 if (!$was_error) {
-    if ($options{'--show_ok'}) {
+    if ($OPTIONS{'--show_ok'}) {
         print GREEN();
         print "ok\n";
         print RESET();
     }
-    exit $success_exit_status;
+    exit $SUCCESS_EXIT_STATUS;
 } else {
-    exit $error_exit_status;
+    exit $ERROR_EXIT_STATUS;
 }
