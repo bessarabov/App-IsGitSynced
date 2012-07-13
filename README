@@ -1,5 +1,6 @@
 NAME
-    is_git_synced - script to find out if the local git repo is fully synced
+    is_git_synced - script to find out if the local git repos are fully
+    synced
 
 VERSION
     Version 0.03
@@ -11,11 +12,12 @@ SYNOPSIS
 
           --quiet           Script will not output anything
           --only_errors     Script will write only dirs with errors
+          --ignore_missing  Will ignore missing dirs
           --show_ok         Show 'ok' message if everthing is synced
           --help            Show this message
           --version         Show version number
 
-    Script checks every specified dir if it is a git repo and it has ho
+    Script checks every specified dir if it is a git repo and it has no
     local changes that are not in remote repository origin. Script by
     default will output information about every checking dir in the separate
     line. The exit status will be 0 if everything is synced and 1 otherwise.
