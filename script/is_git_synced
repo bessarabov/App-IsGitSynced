@@ -80,6 +80,12 @@ my %OPTIONS = (
 );
 lock_keys(%OPTIONS); # To make sure you haven't misspelled key
 
+my %STATUSES = (
+    'success' => 1,
+    'fail'    => 2,
+);
+lock_keys(%STATUSES); # To make sure you haven't misspelled key
+
 # subs
 sub get_paths_and_set_options {
 
@@ -110,38 +116,94 @@ sub error {
     }
 }
 
-sub is_git_repo {
+=begin comment
+
+Subs that check git repo
+
+They return 2 values: 1) $check_status (from %STATUSES) 2) $fail_text that
+should be printed
+
+=end comment
+
+=cut
+
+sub is_dir {
     my ($path) = @_;
 
-    `cd $path; git status 2>&1`;
-    return ${^CHILD_ERROR_NATIVE} ? $FALSE : $TRUE;
+    if (-d $path) {
+        return $STATUSES{success};
+    } else {
+        return (
+            $STATUSES{fail},
+            "path '$path' is not a director"
+        );
+    }
 }
 
-sub has_unstaged_changes {
-    my ($path) = @_;
-
-    `cd $path; git diff --exit-code 2>&1`;
-    return ${^CHILD_ERROR_NATIVE} ? $FALSE : $TRUE;
-}
-
-sub has_staged_changes {
-    my ($path) = @_;
-
-    `cd $path; git diff --cached --exit-code 2>&1`;
-    return ${^CHILD_ERROR_NATIVE} ? $FALSE : $TRUE;
-}
-
-sub has_untracked {
+sub has_no_untracked {
     my ($path) = @_;
 
     my $output = `cd $path; git status --porcelain`;
     my @remotes = split(/\n/, $output);
 
+    my $has_untracked = $FALSE;
     foreach my $line (@remotes) {
-        return $TRUE if $line =~ /^\?\?/;
+        $has_untracked = $TRUE if $line =~ /^\?\?/;
     }
 
-    return $FALSE;
+    if (not $has_untracked) {
+        return $STATUSES{success};
+    } else {
+        return (
+            $STATUSES{fail},
+            "path '$path' has untracked files",
+        );
+    }
+}
+
+sub is_git_repo {
+    my ($path) = @_;
+
+    `cd $path; git status 2>&1`;
+
+    if (not ${^CHILD_ERROR_NATIVE}) {
+        return $STATUSES{success};
+    } else {
+        return (
+            $STATUSES{fail},
+            "path '$path' is not a git repository"
+        );
+    }
+}
+
+sub has_no_unstaged_changes {
+    my ($path) = @_;
+
+    `cd $path; git diff --exit-code 2>&1`;
+
+    if (not ${^CHILD_ERROR_NATIVE}) {
+        return $STATUSES{success};
+    } else {
+        return (
+            $STATUSES{fail},
+            "path '$path' has unstaged changes"
+        );
+    }
+}
+
+sub has_no_staged_changes {
+    my ($path) = @_;
+
+    `cd $path; git diff --cached --exit-code 2>&1`;
+
+    if (not ${^CHILD_ERROR_NATIVE}) {
+        return $STATUSES{success};
+    } else {
+        return (
+            $STATUSES{fail},
+            "path '$path' has staged changes",
+        );
+    }
 }
 
 sub has_origin {
@@ -150,64 +212,46 @@ sub has_origin {
     my $output = `cd $path; git remote`;
     my @remotes = split(/\n/, $output);
 
+    my $has_origin;
     foreach my $remote (@remotes) {
-        return $TRUE if $remote eq 'origin';
+        $has_origin = $TRUE if $remote eq 'origin';
     }
 
-    return $FALSE;
+    if ($has_origin) {
+        return $STATUSES{success};
+    } else {
+        return (
+            $STATUSES{fail},
+            "path '$path' has no remote 'origin'",
+        );
+    }
 }
 
 # http://stackoverflow.com/questions/8830833/check-that-the-local-git-repo-has-everything-commited-and-pushed-to-master
-sub has_divergences_with_origin {
+sub has_no_divergences_with_origin {
     my ($path) = @_;
 
     my $output = `cd $path; git branch`;
     my @branches = map { s/..(.*)/$1/; $_; } split(/\n/, $output);
 
+    my $has_divergences_with_origin;
     foreach my $branch (@branches) {
         next if $branch eq '(no branch)';
         my $local = `cd $path; git rev-parse --verify $branch 2>&1`;
         my $origin = `cd $path; git rev-parse --verify origin/$branch 2>&1`;
-        return $TRUE if $local ne $origin;
+
+        $has_divergences_with_origin = $TRUE if $local ne $origin;
     }
 
-    return $FALSE;
+    if (not $has_divergences_with_origin) {
+        return $STATUSES{success};
+    } else {
+        return (
+            $STATUSES{fail},
+            "path '$path' has some divergences with remote 'origin'",
+        );
+    }
 }
-
-my $checks = [
-    {
-        text => sub { error("path '$_[0]' is a file") },
-        func => sub { return -f $_[0] },
-    },
-    {
-        text => sub { error("path '$_[0]' does not exist") },
-        func => sub { return !-d $_[0] },
-    },
-    {
-        text => sub { error("path '$_[0]' is not a git repository") },
-        func => sub { return !is_git_repo($_[0]) },
-    },
-    {
-        text => sub { error("path '$_[0]' has unstaged changes") },
-        func => sub { return !has_unstaged_changes($_[0]) },
-    },
-    {
-        text => sub { error("path '$_[0]' has staged changes") },
-        func => sub { return !has_staged_changes($_[0]) },
-    },
-    {
-        text => sub { error("path '$_[0]' has untracked files") },
-        func => sub { return has_untracked($_[0]) },
-    },
-    {
-        text => sub { error("path '$_[0]' has no remote 'origin'") },
-        func => sub { return !has_origin($_[0]) },
-    },
-    {
-        text => sub { error("path '$_[0]' has some divergences with remote 'origin'") },
-        func => sub { return has_divergences_with_origin($_[0]) },
-    },
-];
 
 # main
 my @paths = get_paths_and_set_options();
@@ -231,10 +275,24 @@ if (!@paths) {
 foreach my $path (@paths) {
     my $local_error;
 
+    my @checks = (
+        \&is_dir,
+        \&is_git_repo,
+        \&has_no_untracked,
+        \&has_no_unstaged_changes,
+        \&has_no_staged_changes,
+        \&has_origin,
+        \&has_no_divergences_with_origin,
+    );
+
     CHECKS:
-    foreach my $check (@{$checks}) {
-        if ($check->{func}->($path)) {
-            $check->{text}->($path);
+    foreach my $check (@checks) {
+        my ($check_result, $fail_text) = $check->($path);
+
+        if ($check_result == $STATUSES{success}) {
+            next CHECKS;
+        } elsif ($check_result == $STATUSES{fail}) {
+            error($fail_text);
             $local_error = 1;
             last CHECKS;
         }
