@@ -1,10 +1,7 @@
-script/is_git_synced
 Changes
 MANIFEST
 Makefile.PL
 README
 lib/App/IsGitSynced.pm
+script/is_git_synced
 t/00-load.t
-t/manifest.t
-t/pod-coverage.t
-t/pod.t
