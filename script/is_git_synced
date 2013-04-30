@@ -76,6 +76,7 @@ my %OPTIONS = (
     '--quiet'          => $FALSE,
     '--only_errors'    => $FALSE,
     '--ignore_missing' => $FALSE,
+    '--git_only'       => $FALSE,
     '--version'        => $FALSE,
     '--show_ok'        => $FALSE,
     '--help'           => $FALSE,
@@ -173,6 +174,8 @@ sub is_git_repo {
 
     if (not ${^CHILD_ERROR_NATIVE}) {
         return $STATUSES{success};
+    } elsif ( $OPTIONS{'--git_only'}) {
+        return $STATUSES{skip};
     } else {
         return (
             $STATUSES{fail},
