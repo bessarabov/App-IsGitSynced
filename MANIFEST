@@ -1,7 +1,0 @@
-Changes
-MANIFEST
-Makefile.PL
-README
-lib/App/IsGitSynced.pm
-script/is_git_synced
-t/00-load.t

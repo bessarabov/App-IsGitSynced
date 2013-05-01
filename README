@@ -1,45 +1,10 @@
-NAME
-    is_git_synced - script to find out if the local git repos are fully
-    synced
+# Perl module App::IsGitSynced
 
-VERSION
-    Version 0.04
+This is source code for Perl module App::IsGitSynced.
 
-SYNOPSIS
-    is_git_synced [options] dir1 [dir2 ...]
+## I want to use it!
 
-     Options:
-
-          --quiet           Script will not output anything
-          --only_errors     Script will write only dirs with errors
-          --ignore_missing  Will ignore missing dirs
-          --show_ok         Show 'ok' message if everthing is synced
-          --help            Show this message
-          --version         Show version number
-
-    Script checks every specified dir if it is a git repo and it has no
-    local changes that are not in remote repository origin. Script by
-    default will output information about every checking dir in the separate
-    line. The exit status will be 0 if everything is synced and 1 otherwise.
-
-    Project url: https://github.com/bessarabov/App-IsGitSynced
-
-AUTHOR
-    Ivan Bessarabov, "<ivan@bessarabov.ru>"
-
-SOURCE CODE
-    The source code for this module is hosted on GitHub
-    <https://github.com/bessarabov/App-IsGitSynced>
-
-BUGS
-    Please report any bugs or feature requests in GitHub Issues
-    <https://github.com/bessarabov/App-IsGitSynced/issues>
-
-LICENSE AND COPYRIGHT
-    Copyright 2012 Ivan Bessarabov.
-
-    This program is free software; you can redistribute it and/or modify it
-    under the terms of either: the GNU General Public License as published
-    by the Free Software Foundation; or the Artistic License.
-
-    See http://dev.perl.org/licenses/ for more information.
+The GitHub repo https://github.com/bessarabov/App-IsGitSynced contaings the
+source code for the module App::IsGitSynced. Before going to CPAN the source
+code is being converted, so if you need to use the module you should take it
+from CPAN: https://metacpan.org/module/App::IsGitSynced
