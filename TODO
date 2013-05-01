@@ -4,7 +4,7 @@
 
 ## next versions
 
- * make whitespaces test work after build
+ * Add Test::Whitespaces
  * make dist::zilla add version number to file `is_git_synced` and make that
    file independent from lib/App/IsGitSynced.pm
  * minimize running external programms. Just once run `git status --porcelain`
