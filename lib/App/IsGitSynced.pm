@@ -6,6 +6,11 @@ package App::IsGitSynced;
 
 Please read L<is_git_synced> documentation.
 
+=head1 DESCRIPTION
+
+App::IsGitSynced version numbers uses Semantic Versioning standart.
+Please visit L<http://semver.org/> to find out all about this great thing.
+
 =cut
 
 1;
