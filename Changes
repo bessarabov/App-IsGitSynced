@@ -18,3 +18,12 @@ Revision history for App-IsGitSynced
 0.05    2013-05-01
         * Module is now released with Dist::Zilla
         * Other small changes
+
+1.0.0   2013-09-01
+        [Major]
+        * Using SemVer for version numbers
+
+        [Patch]
+        * Added Perl 5.8 to be checked by Travis CI
+        * Fixing travis
+        * Added Perl 5.16 to .travis.yml
