@@ -216,6 +216,8 @@ sub has_no_divergences_with_origin {
     my $has_divergences_with_origin;
     foreach my $branch (@branches) {
         next if $branch eq '(no branch)';
+        next if $branch =~ /(detached .*)/;
+
         my $local = `cd $path; git rev-parse --verify $branch 2>&1`;
         my $origin = `cd $path; git rev-parse --verify origin/$branch 2>&1`;
 
