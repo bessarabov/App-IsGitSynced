@@ -27,3 +27,7 @@ Revision history for App-IsGitSynced
         * Added Perl 5.8 to be checked by Travis CI
         * Fixing travis
         * Added Perl 5.16 to .travis.yml
+
+1.0.1   2014-09-13
+        [Patch]
+        * Fixing warnings when checking git repo in detached stage
