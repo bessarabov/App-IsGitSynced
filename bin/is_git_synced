@@ -69,7 +69,7 @@ sub get_paths_and_set_options {
     my @paths;
 
     foreach my $argv (@ARGV) {
-        if ($argv ~~ [keys %OPTIONS]) {
+        if (grep {$argv eq $_} keys %OPTIONS) {
             $OPTIONS{$argv} = $TRUE;
         } else {
             push @paths, $argv;
