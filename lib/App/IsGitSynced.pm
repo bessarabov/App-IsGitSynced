@@ -11,6 +11,14 @@ Please read L<is_git_synced> documentation.
 App::IsGitSynced version numbers uses Semantic Versioning standart.
 Please visit L<http://semver.org/> to find out all about this great thing.
 
+=head1 SEE ALSO
+
+=over
+
+=item L<App::GitWorkspaceScanner>
+
+=back
+
 =cut
 
 1;
